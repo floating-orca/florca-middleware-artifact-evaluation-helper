@@ -1,0 +1,32 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "FlorcaAeListFunctions",
+      "Effect": "Allow",
+      "Action": ["lambda:ListFunctions"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "FlorcaAeManageOwnFunctionsOnly",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:GetFunction",
+        "lambda:GetFunctionConfiguration",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:DeleteFunction",
+        "lambda:InvokeFunction",
+        "lambda:TagResource"
+      ],
+      "Resource": "arn:aws:lambda:*:*:function:florca-ae-*"
+    },
+    {
+      "Sid": "FlorcaAePassExecutionRoleOnly",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "__EXEC_ROLE_ARN__"
+    }
+  ]
+}

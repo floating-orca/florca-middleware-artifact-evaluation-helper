@@ -1,0 +1,4 @@
+.workdir/
+.tools/
+basic-functional-tests_docker/book-output/
+*.pdf

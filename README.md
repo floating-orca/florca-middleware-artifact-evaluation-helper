@@ -72,12 +72,6 @@ Set this before running any `build.sh` / `run*.sh` script. This was
 verified by an artifact evaluator for `basic-functional-tests_docker/`
 (all 26 tests passed); builds and runs are slower under emulation.
 
-**Pinned base images:** the Dockerfiles pin their base images by digest
-(`@sha256:...`) so that every build uses the same base images. If a
-pinned digest can no longer be pulled, run `./unpin-images.sh` from the
-repository root: it prints a warning and, after confirmation, removes the
-digests so the plain tags are used (results may then deviate slightly).
-
 The paper evaluates FLORCA through four benchmarking applications
 (Section 5.1), each exercising a different combination of `run`,
 `next`, and `sendMsg`. 
@@ -189,10 +183,6 @@ Roughly, what each script does:
   runs `webcrawler-video` against real Lambda.
   **`dynamic-recursive-spawning_aws/teardown-aws-roles.sh`** — removes
   what `setup-aws-roles.sh` created.
-- **`unpin-images.sh`** (repository root) — optional fallback: after a
-  warning and confirmation, removes the `@sha256:...` digest pins from
-  the Dockerfiles' base images, for the case that a pinned digest can no
-  longer be pulled (see "Pinned base images" above).
 
 And what the workflows themselves do:
 

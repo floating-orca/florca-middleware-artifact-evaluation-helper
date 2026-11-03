@@ -174,10 +174,10 @@ Roughly, what each script does:
   a short summary (final allocations, the coordinator's negotiation log,
   the participant invocations), and saves the full record
   (`run-output.txt`, `inspect.txt`, `coordination.log`) to
-  `decentralized-negotiation_kn/results/`. With the default parameters
-  the negotiation is expected **not** to reach consensus within the
-  epoch limit, so `"success":false` and `insufficientAllocation` in the
-  `Output:` line are expected; the check verifies that the rounds of
+  `decentralized-negotiation_kn/results/`. The negotiation may or may
+  not reach consensus within the epoch limit (this varies between runs),
+  so `"success":false` and `insufficientAllocation` in the `Output:` line
+  are not a failure of the check; it verifies that the rounds of
   coordination (`run`, `next`, `sendMsg` across the 5 Knative
   participants) execute end to end (`Success: true` is the run status).
   **`decentralized-negotiation_kn/teardown.sh`** — removes the cluster

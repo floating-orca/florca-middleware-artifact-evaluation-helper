@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this artifact, please cite the FLORCA paper."
+title: "FloatingOrca - Middleware 2026 Artifact Evaluation Helper"
+type: software
+license: MIT
+repository-code: "https://github.com/floating-orca/florca-middleware-artifact-evaluation-helper"
+abstract: >-
+  Convenience scripts to build and run FLORCA v0.8.1, the system described in
+  "FLORCA: A Lightweight Runtime for Dynamic Serverless Function Coordination
+  and Execution" (Middleware '26), for artifact evaluation.
+authors:
+  # TODO: add all authors (family-names, given-names, affiliation, optional orcid)
+  - family-names: Gritsch
+    given-names: Philipp
+    affiliation: "University of Innsbruck"
+# TODO: once the helper repository is archived on Zenodo, add its DOI:
+# doi: "10.5281/zenodo.XXXXXXX"
+references:
+  - type: software
+    title: "FLORCA v0.8.1"
+    version: "v0.8.1"
+    doi: "10.5281/zenodo.19712026"
+    repository-code: "https://github.com/floating-orca/florca"
+preferred-citation:
+  type: conference-paper
+  title: "FLORCA: A Lightweight Runtime for Dynamic Serverless Function Coordination and Execution"
+  conference:
+    name: "Middleware '26"
+  doi: "10.1145/3801927.3810470"
+  year: 2026
+  authors:
+    # TODO: add the paper's authors
+    - family-names: Gritsch
+      given-names: Philipp

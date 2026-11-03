@@ -15,9 +15,43 @@
 
 set -Eeuo pipefail
 
-echo "==> Running the example-workflow suite (examples/*/test.bats)"
-if ! docker run --rm -t --tmpfs /tmp florca-ae bats -r examples; then
-  echo "==> Suite failed, retrying once" >&2
-  docker run --rm -t --tmpfs /tmp florca-ae bats -r examples
+DIR="$(dirname "$(realpath "$0")")"
+LOG_DIR="$DIR/logs"
+
+# Each attempt's full output is kept in logs/attempt-N.log. The container runs
+# with a TTY (for bats' live progress display); in the saved log, the progress
+# redraws and terminal escape codes are removed so that it reads as plain text.
+# Stale logs from a previous invocation are removed first.
+rm -rf "$LOG_DIR"
+mkdir -p "$LOG_DIR"
+
+clean_log() {
+  sed -E 's/\x1b\[1G/\n/g' "$1" \
+    | sed -E '/\x1b\[[0-9]+G/d' \
+    | sed -E 's/\x1b\[[0-9;?]*[A-Za-z]//g; s/\r//g' \
+    | sed -E '/^$/d' > "$2"
+}
+
+run_suite() {
+  local status=0
+  # pipefail (set above) makes the pipeline's status that of docker, not tee
+  docker run --rm -t --tmpfs /tmp florca-ae bats -r examples 2>&1 | tee "$LOG_DIR/.raw-$1.log" || status=$?
+  clean_log "$LOG_DIR/.raw-$1.log" "$LOG_DIR/attempt-$1.log"
+  rm -f "$LOG_DIR/.raw-$1.log"
+  return "$status"
+}
+
+echo "==> Running the example-workflow suite (examples/*/test.bats), attempt 1"
+if run_suite 1; then
+  echo "==> Example suite PASSED (first attempt)"
+  exit 0
 fi
-echo "==> Example suite PASSED"
+
+echo "==> Attempt 1 failed (log: $LOG_DIR/attempt-1.log), retrying once" >&2
+if run_suite 2; then
+  echo "==> Example suite PASSED ON RETRY (attempt 1 failed; see $LOG_DIR/attempt-1.log)"
+  exit 0
+fi
+
+echo "==> Example suite FAILED (both attempts; see $LOG_DIR/)" >&2
+exit 1

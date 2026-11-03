@@ -2,3 +2,5 @@
 .tools/
 basic-functional-tests_docker/book-output/
 *.pdf
+basic-functional-tests_docker/logs/
+decentralized-negotiation_kn/results/

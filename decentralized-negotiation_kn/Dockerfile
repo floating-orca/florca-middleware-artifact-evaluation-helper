@@ -14,7 +14,7 @@
 ## container (as in ../docker/), so the only thing reaching outside of it
 ## is `kind`/Knative's own use of the Docker socket.
 
-FROM docker.io/library/rust:1.94-trixie AS fetch
+FROM docker.io/library/rust:1.94-trixie@sha256:652612f07bfbbdfa3af34761c1e435094c00dde4a98036132fca28c7bb2b165c AS fetch
 
 ARG FLORCA_TARBALL_URL
 ARG FLORCA_TARBALL_SHA256
@@ -45,7 +45,7 @@ EOF
 
 # ---
 
-FROM docker.io/library/debian:trixie-slim
+FROM docker.io/library/debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4
 
 RUN apt-get update && apt-get install -y \
   ca-certificates \
@@ -78,14 +78,14 @@ RUN curl -fLo /usr/local/bin/kind "https://kind.sigs.k8s.io/dl/v0.29.0/kind-linu
 
 # Docker CLI only (talks to the host daemon via the mounted socket; no
 # dockerd/dind here).
-COPY --from=docker.io/library/docker:28-cli /usr/local/bin/docker /usr/local/bin/docker
+COPY --from=docker.io/library/docker:28-cli@sha256:625d9431a9f54c5a2bc90f24f0e1c3d55b1349fd857dd85035f98c2c9acbdd4d /usr/local/bin/docker /usr/local/bin/docker
 
 WORKDIR /usr/src/florca
 
 COPY container-scripts e2e/container-scripts
 RUN e2e/container-scripts/initdb.sh
 
-COPY --from=docker.io/denoland/deno:bin-2.7.9 /deno /usr/local/bin/deno
+COPY --from=docker.io/denoland/deno:bin-2.7.9@sha256:efa51569eb59689df40e86b3678b7a01fa8fc9a98626750765070d68a871345c /deno /usr/local/bin/deno
 COPY --from=build /usr/src/florca/deno.json /usr/src/florca/deno.lock ./
 COPY --from=build /usr/src/florca/packages packages
 RUN deno install --entrypoint packages/driver/main.ts

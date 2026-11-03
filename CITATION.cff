@@ -1,0 +1,83 @@
+cff-version: 1.2.0
+message: "If you use this artifact, please cite the FLORCA paper."
+title: "FloatingOrca - Middleware 2026 Artifact Evaluation Helper"
+type: software
+license: MIT
+repository-code: "https://github.com/floating-orca/florca-middleware-artifact-evaluation-helper"
+abstract: >-
+  Convenience scripts to build and run FLORCA v0.8.1, the system described in
+  "FLORCA: A Lightweight Runtime for Dynamic Serverless Function Coordination
+  and Execution" (Middleware '26), for artifact evaluation.
+authors:
+  - family-names: Gritsch
+    given-names: Philipp
+    affiliation: "University of Innsbruck"
+  - family-names: Oberroither
+    given-names: Thomas
+    affiliation: "University of Innsbruck"
+  - family-names: Stecher
+    given-names: Hannes
+    affiliation: "University of Innsbruck"
+  - family-names: Felderer
+    given-names: Michael
+    affiliation: "German Aerospace Center (DLR); University of Cologne"
+  - family-names: Ristov
+    given-names: Sashko
+    affiliation: "University of Innsbruck"
+# TODO: once the helper repository is archived on Zenodo, add its DOI:
+# doi: "10.5281/zenodo.XXXXXXX"
+references:
+  - type: software
+    title: "FLORCA v0.8.1"
+    authors:
+    - family-names: Gritsch
+      given-names: Philipp
+      affiliation: "University of Innsbruck"
+    - family-names: Oberroither
+      given-names: Thomas
+      affiliation: "University of Innsbruck"
+    - family-names: Stecher
+      given-names: Hannes
+      affiliation: "University of Innsbruck"
+    - family-names: Felderer
+      given-names: Michael
+      affiliation: "German Aerospace Center (DLR); University of Cologne"
+    - family-names: Ristov
+      given-names: Sashko
+      affiliation: "University of Innsbruck"
+    version: "v0.8.1"
+    doi: "10.5281/zenodo.19712026"
+    repository-code: "https://github.com/floating-orca/florca"
+preferred-citation:
+  type: conference-paper
+  title: "FLORCA: A Lightweight Runtime for Dynamic Serverless Function Coordination and Execution"
+  authors:
+    - family-names: Gritsch
+      given-names: Philipp
+      affiliation: "University of Innsbruck"
+    - family-names: Oberroither
+      given-names: Thomas
+      affiliation: "University of Innsbruck"
+    - family-names: Stecher
+      given-names: Hannes
+      affiliation: "University of Innsbruck"
+    - family-names: Felderer
+      given-names: Michael
+      affiliation: "German Aerospace Center (DLR); University of Cologne"
+    - family-names: Ristov
+      given-names: Sashko
+      affiliation: "University of Innsbruck"
+  collection-title: "27th International Middleware Conference (Middleware '26)"
+  conference:
+    name: "27th International Middleware Conference (Middleware '26)"
+    date-start: 2026-12-14
+    date-end: 2026-12-18
+    city: Tarragona
+    country: ES
+  publisher:
+    name: ACM
+    city: New York, NY
+    country: US
+  pages: 14
+  year: 2026
+  doi: "10.1145/3801927.3810470"

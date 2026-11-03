@@ -27,6 +27,7 @@
 
 set -Eeuo pipefail
 
+DIR="$(dirname "$(realpath "$0")")"
 CONTAINER_NAME="florca-ae-kind-run"
 REQUIRED_PORTS=(5432 8000 8001 8080 443)
 
@@ -62,8 +63,18 @@ if [ "${#busy_ports[@]}" -gt 0 ]; then
   exit 1
 fi
 
+# Not --rm: the container is kept so the result record can be copied out
+# (teardown.sh removes it).
+status=0
 docker run \
   --name "$CONTAINER_NAME" \
   --network host \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  florca-ae-kind
+  florca-ae-kind || status=$?
+
+# Copy the result record (also after a failed check, to ease debugging).
+rm -rf "$DIR/results"
+if docker cp "$CONTAINER_NAME:/var/log/florca/result" "$DIR/results" >/dev/null 2>&1; then
+  echo "Result record saved to $DIR/results/"
+fi
+exit "$status"

@@ -8,11 +8,6 @@ release from the paper
 (software DOI [10.5281/zenodo.19712026](https://doi.org/10.5281/zenodo.19712026))
 and builds/runs it.
 
-## AI Disclaimer
-We used Claude Code, running Sonnet 5 to generate the scripts and readme file in this repository. 
-We validated the scripts for correctness and adapted and refined the readme for readability. 
-We take full responsibility for the content of this repository.
-
 ## Badges requested
 
 - **Artifacts Available**
@@ -63,6 +58,18 @@ this repository at [`docs-v0.8.1/index.html`](./docs-v0.8.1/index.html)
 FLORCA itself isn't supported on native Windows). If you encounter
 problems related to BuildKit during build, refer to your package
 manager to install the BuildKit plugin (e.g. `docker-buildx` on Arch).
+
+**CPU architecture:** the Dockerfiles download some x86-64-only binaries
+(e.g. the mdBook documentation builder, and kind/kubectl/kn/func in
+`decentralized-negotiation_kn/`). On an ARM machine (e.g. Apple Silicon
+or an ARM Linux host), build and run under x86-64 emulation:
+
+```bash
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+```
+
+Set this before running any `build.sh` / `run*.sh` script. Builds and
+runs are slower under emulation.
 
 The paper evaluates FLORCA through four benchmarking applications
 (Section 5.1), each exercising a different combination of `run`,
@@ -149,11 +156,23 @@ Roughly, what each script does:
   Postgres), and builds the documentation.
   **`basic-functional-tests_docker/run-functional-check.sh`** —
   deploys and runs the example workflows (26 test cases), checking
-  each for success.
+  each for success. If the suite fails, it is retried once; the output
+  of each attempt is saved to `basic-functional-tests_docker/logs/`
+  (`attempt-1.log`, `attempt-2.log`), and a pass on the second attempt
+  is reported as "PASSED ON RETRY".
 - **`decentralized-negotiation_kn/build.sh`** — same fetch, plus
   pinned `kind`/`kubectl`/`kn`/`func` tooling.
   **`decentralized-negotiation_kn/run.sh`** — creates (or reuses) a
-  local Knative cluster, deploys and runs `flexi-consensus-kn`.
+  local Knative cluster, deploys and runs `flexi-consensus-kn`, prints
+  a short summary (final allocations, the coordinator's negotiation log,
+  the participant invocations), and saves the full record
+  (`run-output.txt`, `inspect.txt`, `coordination.log`) to
+  `decentralized-negotiation_kn/results/`. The negotiation may or may
+  not reach consensus within the epoch limit (this varies between runs),
+  so `"success":false` and `insufficientAllocation` in the `Output:` line
+  are not a failure of the check; it verifies that the rounds of
+  coordination (`run`, `next`, `sendMsg` across the 5 Knative
+  participants) execute end to end (`Success: true` is the run status).
   **`decentralized-negotiation_kn/teardown.sh`** — removes the cluster
   and container.
 - **`dynamic-recursive-spawning_aws/setup-aws-roles.sh`** — creates
@@ -185,4 +204,12 @@ And what the workflows themselves do:
   generator) instead of a live website, so the crawl is deterministic and
   finite.
 
+## Acknowledgements
 
+We thank the anonymous artifact evaluation reviewers for their time and
+their valuable feedback, which helped us to improve this repository.
+
+We used Claude Code, running Sonnet 5, to generate the scripts and the
+readme file in this repository. We validated the scripts for correctness
+and adapted and refined the readme for readability. We take full
+responsibility for the content of this repository.

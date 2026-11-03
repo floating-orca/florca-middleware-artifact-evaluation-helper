@@ -44,9 +44,23 @@ if kind get clusters 2>/dev/null | grep -q .; then
   # it, kubectl/kn/florca-deployer would all fail with "no configuration
   # has been provided" despite the cluster being perfectly healthy.
   kind export kubeconfig --name "$existing_cluster"
+  # A cluster left behind by an interrupted or failed `kn quickstart` has
+  # Knative Serving but no Kourier ingress: revisions still become Ready,
+  # but routes never do (IngressNotConfigured), so the deploy below would
+  # only fail after func's 120 s timeout with a misleading error.
+  if ! kubectl get namespace kourier-system >/dev/null 2>&1; then
+    echo "The existing kind cluster '$existing_cluster' is incomplete (no Kourier ingress)," >&2
+    echo "most likely left behind by an interrupted or failed earlier run." >&2
+    echo "Run ./teardown.sh and then ./run.sh again to create a fresh cluster." >&2
+    exit 1
+  fi
 else
   echo "Creating a Knative-enabled kind cluster (this can take a very long time)"
-  kn quickstart kind --registry --kubernetes-version 1.32.8
+  if ! kn quickstart kind --registry --kubernetes-version 1.32.8; then
+    echo "kn quickstart failed; the partially created cluster cannot be reused." >&2
+    echo "Run ./teardown.sh and then ./run.sh again." >&2
+    exit 1
+  fi
 fi
 
 # This container runs with --network host (see ../run.sh for why: kind's
@@ -87,8 +101,33 @@ echo "Deploying examples/flexi-consensus-kn (builds and pushes a container image
 florca deploy --workflow-directory examples/flexi-consensus-kn flexi-consensus-kn
 
 echo "Running the flexi-consensus-kn workflow (5 simulated nodes, default target/slot/epochs)"
-output="$(florca run --deployment-name flexi-consensus-kn --wait)"
+output="$(florca run --deployment-name flexi-consensus-kn --wait)" || true
 echo "$output"
+
+# Compact result record, copied to the host by ../run.sh (results/).
+RESULT_DIR=/var/log/florca/result
+mkdir -p "$RESULT_DIR"
+echo "$output" > "$RESULT_DIR/run-output.txt"
+# Every function invocation of the run (the coordinator and the 5 participants), with inputs and outputs.
+florca inspect --latest --show-inputs --show-outputs > "$RESULT_DIR/inspect.txt" 2>&1 || true
+# The coordinator's negotiation log (epochs, ACKs/NACKs, consensus outcome).
+# Cleaned up: color codes, timestamp and run-id prefix removed; identical consecutive
+# lines (one per participant) are collapsed into a "(xN)" count.
+grep -F '[START]' /var/log/florca/engine.log \
+  | sed -E 's/\x1b\[[0-9;]*m//g; s/^.*(\[START\].*) run="[0-9]+"$/\1/' \
+  | uniq -c \
+  | awk '{n=$1; $1=""; sub(/^ /,""); print (n>1 ? $0 " (x" n ")" : $0)}' \
+  > "$RESULT_DIR/coordination.log" || true
+
+echo
+echo "==> Result record (full files in $RESULT_DIR, copied to results/ on the host)"
+echo "--- Final result (Output line of the run) ---"
+grep -E '^Output:' "$RESULT_DIR/run-output.txt" || echo "(no Output line)"
+echo "--- Coordination log (coordinator, [START] lines) ---"
+cat "$RESULT_DIR/coordination.log"
+echo "--- Participant invocations ---"
+grep -E 'participant' "$RESULT_DIR/inspect.txt" || echo "(none found)"
+echo
 
 if echo "$output" | grep -q "Success: true"; then
   echo "==> Functional check PASSED (Knative/kind path)"

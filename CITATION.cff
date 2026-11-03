@@ -11,14 +11,19 @@ abstract: >-
 authors:
   - family-names: Gritsch
     given-names: Philipp
+    affiliation: "University of Innsbruck"
   - family-names: Oberroither
     given-names: Thomas
+    affiliation: "University of Innsbruck"
   - family-names: Stecher
     given-names: Hannes
+    affiliation: "University of Innsbruck"
   - family-names: Felderer
     given-names: Michael
+    affiliation: "University of Innsbruck"
   - family-names: Ristov
     given-names: Sashko
+    affiliation: "University of Innsbruck"
 # TODO: once the helper repository is archived on Zenodo, add its DOI:
 # doi: "10.5281/zenodo.XXXXXXX"
 references:
@@ -33,14 +38,19 @@ preferred-citation:
   authors:
     - family-names: Gritsch
       given-names: Philipp
+      affiliation: "University of Innsbruck"
     - family-names: Oberroither
       given-names: Thomas
+      affiliation: "University of Innsbruck"
     - family-names: Stecher
       given-names: Hannes
+      affiliation: "University of Innsbruck"
     - family-names: Felderer
       given-names: Michael
+      affiliation: "University of Innsbruck"
     - family-names: Ristov
       given-names: Sashko
+      affiliation: "University of Innsbruck"
   collection-title: "27th International Middleware Conference (Middleware '26)"
   conference:
     name: "27th International Middleware Conference (Middleware '26)"

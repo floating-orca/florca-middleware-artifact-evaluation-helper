@@ -29,6 +29,22 @@ authors:
 references:
   - type: software
     title: "FLORCA v0.8.1"
+    authors:
+    - family-names: Gritsch
+      given-names: Philipp
+      affiliation: "University of Innsbruck"
+    - family-names: Oberroither
+      given-names: Thomas
+      affiliation: "University of Innsbruck"
+    - family-names: Stecher
+      given-names: Hannes
+      affiliation: "University of Innsbruck"
+    - family-names: Felderer
+      given-names: Michael
+      affiliation: "German Aerospace Center (DLR); University of Cologne"
+    - family-names: Ristov
+      given-names: Sashko
+      affiliation: "University of Innsbruck"
     version: "v0.8.1"
     doi: "10.5281/zenodo.19712026"
     repository-code: "https://github.com/floating-orca/florca"

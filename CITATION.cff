@@ -9,10 +9,16 @@ abstract: >-
   "FLORCA: A Lightweight Runtime for Dynamic Serverless Function Coordination
   and Execution" (Middleware '26), for artifact evaluation.
 authors:
-  # TODO: add all authors (family-names, given-names, affiliation, optional orcid)
   - family-names: Gritsch
     given-names: Philipp
-    affiliation: "University of Innsbruck"
+  - family-names: Oberroither
+    given-names: Thomas
+  - family-names: Stecher
+    given-names: Hannes
+  - family-names: Felderer
+    given-names: Michael
+  - family-names: Ristov
+    given-names: Sashko
 # TODO: once the helper repository is archived on Zenodo, add its DOI:
 # doi: "10.5281/zenodo.XXXXXXX"
 references:
@@ -24,11 +30,28 @@ references:
 preferred-citation:
   type: conference-paper
   title: "FLORCA: A Lightweight Runtime for Dynamic Serverless Function Coordination and Execution"
-  conference:
-    name: "Middleware '26"
-  doi: "10.1145/3801927.3810470"
-  year: 2026
   authors:
-    # TODO: add the paper's authors
     - family-names: Gritsch
       given-names: Philipp
+    - family-names: Oberroither
+      given-names: Thomas
+    - family-names: Stecher
+      given-names: Hannes
+    - family-names: Felderer
+      given-names: Michael
+    - family-names: Ristov
+      given-names: Sashko
+  collection-title: "27th International Middleware Conference (Middleware '26)"
+  conference:
+    name: "27th International Middleware Conference (Middleware '26)"
+    date-start: 2026-12-14
+    date-end: 2026-12-18
+    city: Tarragona
+    country: ES
+  publisher:
+    name: ACM
+    city: New York, NY
+    country: US
+  pages: 14
+  year: 2026
+  doi: "10.1145/3801927.3810470"

@@ -189,6 +189,10 @@ Roughly, what each script does:
   runs `webcrawler-video` against real Lambda.
   **`dynamic-recursive-spawning_aws/teardown-aws-roles.sh`** — removes
   what `setup-aws-roles.sh` created.
+- **`unpin-images.sh`** (repository root) — optional fallback: after a
+  warning and confirmation, removes the `@sha256:...` digest pins from
+  the Dockerfiles' base images, for the case that a pinned digest can no
+  longer be pulled (see "Pinned base images" above).
 
 And what the workflows themselves do:
 

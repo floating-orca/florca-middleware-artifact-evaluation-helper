@@ -207,9 +207,7 @@ And what the workflows themselves do:
 ## Acknowledgements
 
 We thank the anonymous artifact evaluation reviewers for their time and
-their valuable feedback, which helped us improve this repository (e.g.
-clearer reporting of test retries, a saved result record for the Knative
-example, and documentation of the CPU architecture requirements).
+their valuable feedback, which helped us to improve this repository.
 
 We used Claude Code, running Sonnet 5, to generate the scripts and the
 readme file in this repository. We validated the scripts for correctness

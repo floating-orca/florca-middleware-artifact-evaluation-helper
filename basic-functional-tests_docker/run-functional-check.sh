@@ -27,7 +27,7 @@ mkdir -p "$LOG_DIR"
 
 clean_log() {
   sed -E 's/\x1b\[1G/\n/g' "$1" \
-    | sed -E '/\x1b\[75G/d' \
+    | sed -E '/\x1b\[[0-9]+G/d' \
     | sed -E 's/\x1b\[[0-9;?]*[A-Za-z]//g; s/\r//g' \
     | sed -E '/^$/d' > "$2"
 }

@@ -44,9 +44,23 @@ if kind get clusters 2>/dev/null | grep -q .; then
   # it, kubectl/kn/florca-deployer would all fail with "no configuration
   # has been provided" despite the cluster being perfectly healthy.
   kind export kubeconfig --name "$existing_cluster"
+  # A cluster left behind by an interrupted or failed `kn quickstart` has
+  # Knative Serving but no Kourier ingress: revisions still become Ready,
+  # but routes never do (IngressNotConfigured), so the deploy below would
+  # only fail after func's 120 s timeout with a misleading error.
+  if ! kubectl get namespace kourier-system >/dev/null 2>&1; then
+    echo "The existing kind cluster '$existing_cluster' is incomplete (no Kourier ingress)," >&2
+    echo "most likely left behind by an interrupted or failed earlier run." >&2
+    echo "Run ./teardown.sh and then ./run.sh again to create a fresh cluster." >&2
+    exit 1
+  fi
 else
   echo "Creating a Knative-enabled kind cluster (this can take a very long time)"
-  kn quickstart kind --registry --kubernetes-version 1.32.8
+  if ! kn quickstart kind --registry --kubernetes-version 1.32.8; then
+    echo "kn quickstart failed; the partially created cluster cannot be reused." >&2
+    echo "Run ./teardown.sh and then ./run.sh again." >&2
+    exit 1
+  fi
 fi
 
 # This container runs with --network host (see ../run.sh for why: kind's

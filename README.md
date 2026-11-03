@@ -68,9 +68,8 @@ or an ARM Linux host), build and run under x86-64 emulation:
 export DOCKER_DEFAULT_PLATFORM=linux/amd64
 ```
 
-Set this before running any `build.sh` / `run*.sh` script. This was
-verified by an artifact evaluator for `basic-functional-tests_docker/`
-(all 26 tests passed); builds and runs are slower under emulation.
+Set this before running any `build.sh` / `run*.sh` script. Builds and
+runs are slower under emulation.
 
 The paper evaluates FLORCA through four benchmarking applications
 (Section 5.1), each exercising a different combination of `run`,

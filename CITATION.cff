@@ -24,8 +24,7 @@ authors:
   - family-names: Ristov
     given-names: Sashko
     affiliation: "University of Innsbruck"
-# TODO: once the helper repository is archived on Zenodo, add its DOI:
-# doi: "10.5281/zenodo.XXXXXXX"
+doi: "10.5281/zenodo.23928719"
 references:
   - type: software
     title: "FLORCA v0.8.1"

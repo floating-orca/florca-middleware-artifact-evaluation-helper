@@ -8,11 +8,6 @@ release from the paper
 (software DOI [10.5281/zenodo.19712026](https://doi.org/10.5281/zenodo.19712026))
 and builds/runs it.
 
-## AI Disclaimer
-We used Claude Code, running Sonnet 5 to generate the scripts and readme file in this repository. 
-We validated the scripts for correctness and adapted and refined the readme for readability. 
-We take full responsibility for the content of this repository.
-
 ## Badges requested
 
 - **Artifacts Available**
@@ -63,6 +58,25 @@ this repository at [`docs-v0.8.1/index.html`](./docs-v0.8.1/index.html)
 FLORCA itself isn't supported on native Windows). If you encounter
 problems related to BuildKit during build, refer to your package
 manager to install the BuildKit plugin (e.g. `docker-buildx` on Arch).
+
+**CPU architecture:** the Dockerfiles download some x86-64-only binaries
+(e.g. the mdBook documentation builder, and kind/kubectl/kn/func in
+`decentralized-negotiation_kn/`). On an ARM machine (e.g. Apple Silicon
+or an ARM Linux host), build and run under x86-64 emulation:
+
+```bash
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+```
+
+Set this before running any `build.sh` / `run*.sh` script. This was
+verified by an artifact evaluator for `basic-functional-tests_docker/`
+(all 26 tests passed); builds and runs are slower under emulation.
+
+**Pinned base images:** the Dockerfiles pin their base images by digest
+(`@sha256:...`) so that every build uses the same base images. If a
+pinned digest can no longer be pulled, run `./unpin-images.sh` from the
+repository root: it prints a warning and, after confirmation, removes the
+digests so the plain tags are used (results may then deviate slightly).
 
 The paper evaluates FLORCA through four benchmarking applications
 (Section 5.1), each exercising a different combination of `run`,
@@ -149,11 +163,23 @@ Roughly, what each script does:
   Postgres), and builds the documentation.
   **`basic-functional-tests_docker/run-functional-check.sh`** —
   deploys and runs the example workflows (26 test cases), checking
-  each for success.
+  each for success. If the suite fails, it is retried once; the output
+  of each attempt is saved to `basic-functional-tests_docker/logs/`
+  (`attempt-1.log`, `attempt-2.log`), and a pass on the second attempt
+  is reported as "PASSED ON RETRY".
 - **`decentralized-negotiation_kn/build.sh`** — same fetch, plus
   pinned `kind`/`kubectl`/`kn`/`func` tooling.
   **`decentralized-negotiation_kn/run.sh`** — creates (or reuses) a
-  local Knative cluster, deploys and runs `flexi-consensus-kn`.
+  local Knative cluster, deploys and runs `flexi-consensus-kn`, prints
+  a short summary (final allocations, the coordinator's negotiation log,
+  the participant invocations), and saves the full record
+  (`run-output.txt`, `inspect.txt`, `coordination.log`) to
+  `decentralized-negotiation_kn/results/`. With the default parameters
+  the negotiation is expected **not** to reach consensus within the
+  epoch limit, so `"success":false` and `insufficientAllocation` in the
+  `Output:` line are expected; the check verifies that the rounds of
+  coordination (`run`, `next`, `sendMsg` across the 5 Knative
+  participants) execute end to end (`Success: true` is the run status).
   **`decentralized-negotiation_kn/teardown.sh`** — removes the cluster
   and container.
 - **`dynamic-recursive-spawning_aws/setup-aws-roles.sh`** — creates
@@ -185,4 +211,14 @@ And what the workflows themselves do:
   generator) instead of a live website, so the crawl is deterministic and
   finite.
 
+## Acknowledgements
 
+We thank the anonymous artifact evaluation reviewers for their time and
+their valuable feedback, which helped us improve this repository (e.g.
+clearer reporting of test retries, a saved result record for the Knative
+example, and documentation of the CPU architecture requirements).
+
+We used Claude Code, running Sonnet 5, to generate the scripts and the
+readme file in this repository. We validated the scripts for correctness
+and adapted and refined the readme for readability. We take full
+responsibility for the content of this repository.

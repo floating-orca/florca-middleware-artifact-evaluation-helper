@@ -15,9 +15,30 @@
 
 set -Eeuo pipefail
 
-echo "==> Running the example-workflow suite (examples/*/test.bats)"
-if ! docker run --rm -t --tmpfs /tmp florca-ae bats -r examples; then
-  echo "==> Suite failed, retrying once" >&2
-  docker run --rm -t --tmpfs /tmp florca-ae bats -r examples
+DIR="$(dirname "$(realpath "$0")")"
+LOG_DIR="$DIR/logs"
+
+# Each attempt's full output is kept in logs/attempt-N.log (the container
+# runs with a TTY, so the logs contain \r line endings). Stale logs from a
+# previous invocation are removed first.
+rm -rf "$LOG_DIR"
+mkdir -p "$LOG_DIR"
+
+run_suite() {
+  docker run --rm -t --tmpfs /tmp florca-ae bats -r examples 2>&1 | tee "$LOG_DIR/attempt-$1.log"
+}
+
+echo "==> Running the example-workflow suite (examples/*/test.bats), attempt 1"
+if run_suite 1; then
+  echo "==> Example suite PASSED (first attempt)"
+  exit 0
 fi
-echo "==> Example suite PASSED"
+
+echo "==> Attempt 1 failed (log: $LOG_DIR/attempt-1.log), retrying once" >&2
+if run_suite 2; then
+  echo "==> Example suite PASSED ON RETRY (attempt 1 failed; see $LOG_DIR/attempt-1.log)"
+  exit 0
+fi
+
+echo "==> Example suite FAILED (both attempts; see $LOG_DIR/)" >&2
+exit 1

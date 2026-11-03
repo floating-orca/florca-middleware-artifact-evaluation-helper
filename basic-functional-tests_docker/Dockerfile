@@ -7,7 +7,7 @@
 ## fetches and checksum-verifies the exact archived v0.8.1 tarball from
 ## Zenodo at build time. See ../versions.sh for the pinned URL/checksum.
 
-FROM docker.io/library/rust:1.94-trixie AS fetch
+FROM docker.io/library/rust:1.94-trixie@sha256:652612f07bfbbdfa3af34761c1e435094c00dde4a98036132fca28c7bb2b165c AS fetch
 
 ARG FLORCA_TARBALL_URL
 ARG FLORCA_TARBALL_SHA256
@@ -69,7 +69,7 @@ RUN curl -fL "https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VE
 
 # ---
 
-FROM docker.io/library/debian:trixie-slim
+FROM docker.io/library/debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4
 
 RUN apt-get update && apt-get install -y \
   ca-certificates \
@@ -96,7 +96,7 @@ WORKDIR /usr/src/florca
 COPY container-scripts e2e/container-scripts
 RUN e2e/container-scripts/initdb.sh
 
-COPY --from=docker.io/denoland/deno:bin-2.7.9 /deno /usr/local/bin/deno
+COPY --from=docker.io/denoland/deno:bin-2.7.9@sha256:efa51569eb59689df40e86b3678b7a01fa8fc9a98626750765070d68a871345c /deno /usr/local/bin/deno
 COPY --from=build /usr/src/florca/deno.json /usr/src/florca/deno.lock ./
 COPY --from=build /usr/src/florca/packages packages
 RUN deno install --entrypoint packages/driver/main.ts
